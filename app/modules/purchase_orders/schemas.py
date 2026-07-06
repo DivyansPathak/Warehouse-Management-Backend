@@ -1,17 +1,11 @@
 from pydantic import BaseModel
 
-
-class PurchaseOrderItemRequest(BaseModel):
-    product_id: str
-    quantity: int
-    purchase_price: float
+from app.modules.purchase_orders.models import PurchaseOrderItem
 
 
 class CreatePurchaseOrderRequest(BaseModel):
     supplier_id: str
-
-    items: list[PurchaseOrderItemRequest]
-
+    items: list[PurchaseOrderItem]
     remarks: str | None = None
 
 

@@ -4,6 +4,7 @@ from app.modules.inventory.models import Inventory, StockTransaction
 from app.modules.inventory.repository import InventoryRepository
 from app.modules.purchase_orders.models import PurchaseOrder
 from app.modules.purchase_orders.repository import PurchaseOrderRepository
+from app.modules.purchase_orders.schemas import CreatePurchaseOrderRequest
 from app.utils.mongo import serialize_document, serialize_documents
 
 
@@ -11,8 +12,8 @@ class PurchaseOrderService:
 
     @staticmethod
     async def create_purchase_order(
-        request,
-        current_user,
+        request: CreatePurchaseOrderRequest,
+        current_user: dict,
     ):
 
         po_count = await PurchaseOrderRepository.count()

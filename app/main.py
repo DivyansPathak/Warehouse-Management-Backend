@@ -11,7 +11,7 @@ from app.modules.suppliers.router import router as supplier_router
 from app.modules.users.router import router as user_router
 from app.modules.users.seed import seed_admin
 from app.modules.purchase_orders.router import router as purchase_order_router
-
+from app.modules.dashboard.router import router as dashboard_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -38,6 +38,7 @@ app.include_router(product_router)
 app.include_router(supplier_router)
 app.include_router(inventory_router)
 app.include_router(purchase_order_router)
+app.include_router(dashboard_router)
 
 @app.get("/")
 async def root():
