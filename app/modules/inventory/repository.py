@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-
 from app.db.database import database
 
 
@@ -98,38 +96,38 @@ class InventoryRepository:
     async def get_inventory_value(cls):
 
         pipeline = [
-    {
-        "$addFields": {
-            "product_object_id": {
-                "$toObjectId": "$product_id",
-            }
-        }
-    },
-    {
-        "$lookup": {
-            "from": "products",
-            "localField": "product_object_id",
-            "foreignField": "_id",
-            "as": "product",
-        }
-    },
-    {
-        "$unwind": "$product",
-    },
-    {
-        "$group": {
-            "_id": None,
-            "inventory_value": {
-                "$sum": {
-                    "$multiply": [
-                        "$current_stock",
-                        "$product.purchase_price",
-                    ]
+            {
+                "$addFields": {
+                    "product_object_id": {
+                        "$toObjectId": "$product_id",
+                    }
                 }
             },
-        }
-    },
-]
+            {
+                "$lookup": {
+                    "from": "products",
+                    "localField": "product_object_id",
+                    "foreignField": "_id",
+                    "as": "product",
+                }
+            },
+            {
+                "$unwind": "$product",
+            },
+            {
+                "$group": {
+                    "_id": None,
+                    "inventory_value": {
+                        "$sum": {
+                            "$multiply": [
+                                "$current_stock",
+                                "$product.purchase_price",
+                            ]
+                        }
+                    },
+                }
+            },
+        ]
 
         result = await cls.inventory_collection.aggregate(
             pipeline,
@@ -144,38 +142,38 @@ class InventoryRepository:
     async def get_category_distribution(cls):
 
         pipeline = [
-    {
-        "$addFields": {
-            "product_object_id": {
-                "$toObjectId": "$product_id",
-            }
-        }
-    },
-    {
-        "$lookup": {
-            "from": "products",
-            "localField": "product_object_id",
-            "foreignField": "_id",
-            "as": "product",
-        }
-    },
-    {
-        "$unwind": "$product",
-    },
-    {
-        "$group": {
-            "_id": "$product.category",
-            "units": {
-                "$sum": "$current_stock",
+            {
+                "$addFields": {
+                    "product_object_id": {
+                        "$toObjectId": "$product_id",
+                    }
+                }
             },
-        }
-    },
-    {
-        "$sort": {
-            "_id": 1,
-        }
-    },
-]
+            {
+                "$lookup": {
+                    "from": "products",
+                    "localField": "product_object_id",
+                    "foreignField": "_id",
+                    "as": "product",
+                }
+            },
+            {
+                "$unwind": "$product",
+            },
+            {
+                "$group": {
+                    "_id": "$product.category",
+                    "units": {
+                        "$sum": "$current_stock",
+                    },
+                }
+            },
+            {
+                "$sort": {
+                    "_id": 1,
+                }
+            },
+        ]
 
         return await cls.inventory_collection.aggregate(
             pipeline,
@@ -211,31 +209,3 @@ class InventoryRepository:
         return await cls.transaction_collection.aggregate(
             pipeline,
         ).to_list(None)
-
-    @classmethod
-    async def get_inventory_value_last_10_days(cls):
-        """
-        Returns one point for each of the last 10 days.
-
-        Since inventory only stores the latest stock quantity,
-        the inventory value is the current inventory value repeated
-        for each day. This satisfies the current project requirement.
-        """
-
-        current_value = await cls.get_inventory_value()
-
-        today = datetime.utcnow().date()
-
-        data = []
-
-        for index in range(9, -1, -1):
-            day = today - timedelta(days=index)
-
-            data.append(
-                {
-                    "date": day.strftime("%Y-%m-%d"),
-                    "revenue": current_value,
-                }
-            )
-
-        return data

@@ -1,6 +1,7 @@
 from app.modules.inventory.repository import InventoryRepository
 from app.modules.products.repository import ProductRepository
 from app.modules.purchase_orders.repository import PurchaseOrderRepository
+from app.modules.sales.repository import SalesRepository
 from app.modules.suppliers.repository import SupplierRepository
 from app.utils.mongo import (
     serialize_dashboard_documents,
@@ -58,37 +59,33 @@ class DashboardService:
             for item in category_distribution
         ]
 
-        revenue = (
-            await InventoryRepository.get_inventory_value_last_10_days()
+        revenue_vs_procurement = (
+            await SalesRepository.get_revenue_vs_procurement_last_10_days()
         )
 
-        orders = (
-            await PurchaseOrderRepository.get_orders_last_10_days()
+        sales_count = (
+            await SalesRepository.get_sales_count_last_10_days()
         )
 
-        order_map = {
-            item["date"]: item["orders"]
-            for item in orders
-        }
+        sales_by_customer = (
+            await SalesRepository.get_sales_by_customer()
+        )
 
-        revenue_vs_orders = [
-            {
-                "date": item["date"],
-                "revenue": round(
-                    item["revenue"],
-                    2,
-                ),
-                "orders": order_map.get(
-                    item["date"],
-                    0,
-                ),
-            }
-            for item in revenue
-        ]
+        purchase_order_status = (
+            await PurchaseOrderRepository.get_status_summary()
+        )
+
+        monthly_procurement = (
+            await PurchaseOrderRepository.get_monthly_procurement()
+        )
 
         return {
             "inventory_by_category": inventory_by_category,
-            "revenue_vs_orders": revenue_vs_orders,
+            "revenue_vs_procurement": revenue_vs_procurement,
+            "sales_count": sales_count,
+            "sales_by_customer": sales_by_customer,
+            "purchase_order_status": purchase_order_status,
+            "monthly_procurement": monthly_procurement,
         }
 
     @staticmethod
@@ -102,12 +99,19 @@ class DashboardService:
             await PurchaseOrderRepository.get_recent()
         )
 
+        sales = (
+            await SalesRepository.get_recent()
+        )
+
         return {
             "transactions": serialize_dashboard_documents(
                 transactions,
             ),
             "purchase_orders": serialize_dashboard_documents(
                 purchase_orders,
+            ),
+            "sales": serialize_dashboard_documents(
+                sales,
             ),
         }
 

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -15,15 +17,39 @@ class InventoryCategoryData(BaseModel):
     units: int
 
 
-class RevenueOrdersData(BaseModel):
-    date: str
+class RevenueProcurementData(BaseModel):
+    date: datetime
     revenue: float
-    orders: int
+    procurement: float
+
+
+class SalesCountData(BaseModel):
+    date: datetime
+    sales: int
+
+
+class SalesByCustomerData(BaseModel):
+    customer: str
+    amount: float
+
+
+class PurchaseOrderStatusData(BaseModel):
+    status: str
+    count: int
+
+
+class MonthlyProcurementData(BaseModel):
+    month: str
+    amount: float
 
 
 class DashboardChartsResponse(BaseModel):
     inventory_by_category: list[InventoryCategoryData]
-    revenue_vs_orders: list[RevenueOrdersData]
+    revenue_vs_procurement: list[RevenueProcurementData]
+    sales_count: list[SalesCountData]
+    sales_by_customer: list[SalesByCustomerData]
+    purchase_order_status: list[PurchaseOrderStatusData]
+    monthly_procurement: list[MonthlyProcurementData]
 
 
 class RecentTransactionResponse(BaseModel):
@@ -33,7 +59,7 @@ class RecentTransactionResponse(BaseModel):
     quantity: int
     remarks: str
     created_by: str
-    created_at: str
+    created_at: datetime
 
 
 class RecentPurchaseOrderResponse(BaseModel):
@@ -43,12 +69,23 @@ class RecentPurchaseOrderResponse(BaseModel):
     status: str
     remarks: str | None
     created_by: str
-    created_at: str
+    created_at: datetime
+
+
+class RecentSaleResponse(BaseModel):
+    id: str
+    sale_number: str
+    customer_name: str
+    total_amount: float
+    remarks: str | None
+    created_by: str
+    created_at: datetime
 
 
 class DashboardRecentResponse(BaseModel):
     transactions: list[RecentTransactionResponse]
     purchase_orders: list[RecentPurchaseOrderResponse]
+    sales: list[RecentSaleResponse]
 
 
 class LowStockItemResponse(BaseModel):
@@ -63,7 +100,7 @@ class PendingPurchaseOrderResponse(BaseModel):
     supplier_id: str
     status: str
     created_by: str
-    created_at: str
+    created_at: datetime
 
 
 class DashboardAlertsResponse(BaseModel):

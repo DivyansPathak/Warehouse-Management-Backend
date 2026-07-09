@@ -4,28 +4,9 @@ from app.db.base_repository import BaseRepository
 from app.db.database import database
 
 
-class PurchaseOrderRepository(BaseRepository):
+class SalesRepository(BaseRepository):
 
-    collection = database["purchase_orders"]
-
-    @classmethod
-    async def get_pending_count(cls):
-        return await cls.collection.count_documents(
-            {
-                "status": "PENDING",
-            }
-        )
-
-    @classmethod
-    async def get_pending(cls):
-        return await cls.collection.find(
-            {
-                "status": "PENDING",
-            }
-        ).sort(
-            "created_at",
-            -1,
-        ).to_list(None)
+    collection = database["sales"]
 
     @classmethod
     async def get_recent(
@@ -38,13 +19,27 @@ class PurchaseOrderRepository(BaseRepository):
         ).limit(limit).to_list(limit)
 
     @classmethod
-    async def get_status_summary(cls):
+    async def get_sales_count_last_10_days(cls):
+
+        start_date = datetime.utcnow() - timedelta(days=9)
 
         pipeline = [
             {
+                "$match": {
+                    "created_at": {
+                        "$gte": start_date,
+                    }
+                }
+            },
+            {
                 "$group": {
-                    "_id": "$status",
-                    "count": {
+                    "_id": {
+                        "$dateToString": {
+                            "format": "%Y-%m-%d",
+                            "date": "$created_at",
+                        }
+                    },
+                    "sales": {
                         "$sum": 1,
                     },
                 }
@@ -60,42 +55,51 @@ class PurchaseOrderRepository(BaseRepository):
             pipeline,
         ).to_list(None)
 
-        return [
-            {
-                "status": item["_id"],
-                "count": item["count"],
-            }
+        data_map = {
+            item["_id"]: item["sales"]
             for item in results
-        ]
+        }
+
+        today = datetime.utcnow().date()
+
+        data = []
+
+        for index in range(9, -1, -1):
+
+            day = today - timedelta(days=index)
+
+            date_key = day.strftime("%Y-%m-%d")
+
+            data.append(
+                {
+                    "date": datetime.combine(
+                        day,
+                        time.min,
+                    ).isoformat(),
+                    "sales": data_map.get(
+                        date_key,
+                        0,
+                    ),
+                }
+            )
+
+        return data
 
     @classmethod
-    async def get_monthly_procurement(cls):
+    async def get_sales_by_customer(cls):
 
         pipeline = [
             {
-                "$unwind": "$items",
-            },
-            {
                 "$group": {
-                    "_id": {
-                        "$dateToString": {
-                            "format": "%Y-%m",
-                            "date": "$created_at",
-                        }
-                    },
+                    "_id": "$customer_name",
                     "amount": {
-                        "$sum": {
-                            "$multiply": [
-                                "$items.purchase_price",
-                                "$items.quantity",
-                            ]
-                        }
+                        "$sum": "$total_amount",
                     },
                 }
             },
             {
                 "$sort": {
-                    "_id": 1,
+                    "amount": -1,
                 }
             },
         ]
@@ -106,7 +110,7 @@ class PurchaseOrderRepository(BaseRepository):
 
         return [
             {
-                "month": item["_id"],
+                "customer": item["_id"],
                 "amount": round(
                     item["amount"],
                     2,
@@ -116,11 +120,47 @@ class PurchaseOrderRepository(BaseRepository):
         ]
 
     @classmethod
-    async def get_procurement_last_10_days(cls):
+    async def get_revenue_vs_procurement_last_10_days(
+        cls,
+    ):
 
         start_date = datetime.utcnow() - timedelta(days=9)
 
-        pipeline = [
+        sales_pipeline = [
+            {
+                "$match": {
+                    "created_at": {
+                        "$gte": start_date,
+                    }
+                }
+            },
+            {
+                "$group": {
+                    "_id": {
+                        "$dateToString": {
+                            "format": "%Y-%m-%d",
+                            "date": "$created_at",
+                        }
+                    },
+                    "revenue": {
+                        "$sum": "$total_amount",
+                    },
+                }
+            },
+        ]
+
+        sales_results = await cls.collection.aggregate(
+            sales_pipeline,
+        ).to_list(None)
+
+        revenue_map = {
+            item["_id"]: item["revenue"]
+            for item in sales_results
+        }
+
+        purchase_collection = database["purchase_orders"]
+
+        procurement_pipeline = [
             {
                 "$match": {
                     "created_at": {
@@ -151,13 +191,15 @@ class PurchaseOrderRepository(BaseRepository):
             },
         ]
 
-        results = await cls.collection.aggregate(
-            pipeline,
-        ).to_list(None)
+        procurement_results = (
+            await purchase_collection.aggregate(
+                procurement_pipeline,
+            ).to_list(None)
+        )
 
         procurement_map = {
             item["_id"]: item["procurement"]
-            for item in results
+            for item in procurement_results
         }
 
         today = datetime.utcnow().date()
@@ -176,6 +218,13 @@ class PurchaseOrderRepository(BaseRepository):
                         day,
                         time.min,
                     ).isoformat(),
+                    "revenue": round(
+                        revenue_map.get(
+                            date_key,
+                            0.0,
+                        ),
+                        2,
+                    ),
                     "procurement": round(
                         procurement_map.get(
                             date_key,
