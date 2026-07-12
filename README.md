@@ -381,6 +381,17 @@ A companion Android application is planned using:
 - DataStore
 - Navigation 3
 
+### App Screenshots
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/main/screenshots/D1.png" width="45%" alt="Dashboard" />
+  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/main/screenshots/D2.png" width="45%" alt="Inventory" />
+</p>
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/main/screenshots/D3.png" width="45%" alt="Suppliers" />
+  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/main/screenshots/D4.png" width="45%" alt="Orders" />
+</p>
+
 ---
 
 # 📄 License
