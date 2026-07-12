@@ -381,18 +381,21 @@ A companion Android application is planned using:
 - DataStore
 - Navigation 3
 
-### App Screenshots
+### 📊 App Mockups
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D1.png" width="45%" style="max-width: 320px;" alt="Dashboard Summary" />
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D2.png" width="45%" style="max-width: 320px;" alt="Revenue vs Procurement" />
-</p>
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D3.png" width="45%" style="max-width: 320px;" alt="Sales Trend" />
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D4.png" width="45%" style="max-width: 320px;" alt="Sales by Customer" />
+  <a href="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D1.png">
+    <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D1.png" width="22%" />
+  </a>
+  <a href="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D2.png">
+    <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D2.png" width="22%" />
+  </a>
+  <a href="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D3.png">
+    <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D3.png" width="22%" />
+  </a>
+  <a href="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D4.png">
+    <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D4.png" width="22%" />
+  </a>
 </p>
 ---
 
