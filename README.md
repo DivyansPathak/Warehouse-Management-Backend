@@ -384,14 +384,16 @@ A companion Android application is planned using:
 ### App Screenshots
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D1.png" width="45%" alt="Dashboard" />
-  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D2.png" width="45%" alt="Dashboard - Procurement" />
-</p>
-<p align="center">
-  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D3.png" width="45%" alt="Dashboard - Sales & Inventory" />
-  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D4.png" width="45%" alt="Dashboard - Customer" />
+  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D1.png" width="45%" style="max-width: 320px;" alt="Dashboard Summary" />
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D2.png" width="45%" style="max-width: 320px;" alt="Revenue vs Procurement" />
 </p>
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D3.png" width="45%" style="max-width: 320px;" alt="Sales Trend" />
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="https://raw.githubusercontent.com/DivyansPathak/Warehouse-Management-Backend/master/screenshots/D4.png" width="45%" style="max-width: 320px;" alt="Sales by Customer" />
+</p>
 ---
 
 # 📄 License
