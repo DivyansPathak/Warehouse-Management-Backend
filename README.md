@@ -238,7 +238,15 @@ GET     /dashboard/alerts
 ```
 
 ---
+## Sales
 
+```
+GET     /sales
+POST    /sales
+GET     /sales/{sales_id}
+```
+
+---
 # 🔑 Authentication
 
 Login
